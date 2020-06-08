@@ -5,8 +5,6 @@ import (
 	"log"
 	"runtime"
 	"sync"
-
-	"potentialtech.com/erpg/pkg/report"
 )
 
 type ctxKey string
@@ -72,11 +70,7 @@ func (tx *Transaction) Finalizer(name string) TxFinalizer {
 // Commit prepares commits on all backends and finalizes
 // them if all succeed
 func (tx *Transaction) Commit() error {
-	e := tx.commit()
-	if e != nil {
-		report.Err(report.Error, e)
-	}
-	return e
+	return tx.commit()
 }
 
 func (tx *Transaction) commit() error {

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"potentialtech.com/txmanager"
+	"github.com/williammoran/txmanager"
 )
 
 func main() {
