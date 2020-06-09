@@ -2,23 +2,26 @@ package txmanager
 
 import "log"
 
-// tracker exists to make tracking down errors easier
-type tracker struct {
-	file string
-	line int
+// Tracker exists to make tracking down errors easier
+type Tracker struct {
+	File   string
+	Line   int
+	Logger log.Logger
 }
 
-func (t *tracker) Finalize() error {
+// Finalize is a NOOP
+func (t *Tracker) Finalize() error {
 	return nil
 }
 
-func (t *tracker) Commit() {}
+// Commit is a NOOP
+func (t *Tracker) Commit() {}
 
 // Abort reports the file/line the transaction was created
 // on to make tracking down errors easier
-func (t *tracker) Abort() {
-	log.Printf(
+func (t *Tracker) Abort() {
+	t.Logger.Printf(
 		"Aborting trasaction started %s:%d",
-		t.file, t.line,
+		t.File, t.Line,
 	)
 }

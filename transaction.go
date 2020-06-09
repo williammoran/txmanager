@@ -18,7 +18,7 @@ func WithTx(
 	_, f, l, _ := runtime.Caller(2)
 	t.Add(
 		"Context transaction tracker",
-		&tracker{file: f, line: l},
+		&Tracker{File: f, Line: l},
 	)
 	go func() {
 		<-ctx.Done()
