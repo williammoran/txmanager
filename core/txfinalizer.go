@@ -1,4 +1,4 @@
-package txmanager
+package core
 
 // TxFinalizer does the job of committing
 type TxFinalizer interface {

@@ -1,4 +1,4 @@
-package txmanager
+package core
 
 import (
 	"context"

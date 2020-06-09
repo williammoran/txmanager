@@ -7,7 +7,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/williammoran/txmanager"
+	pg "github.com/williammoran/txmanager/postgres"
 )
 
 func main() {
@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	pgf := txmanager.MakePostgresTxFinalizer(ctx, "main", pool)
+	pgf := pg.MakeFinalizer(ctx, "main", pool)
 	_, err = pgf.TX.ExecContext(ctx, "CREATE TABLE temp (id INT)")
 	if err != nil {
 		panic(err)

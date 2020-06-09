@@ -1,4 +1,4 @@
-package txmanager
+package postgres
 
 import (
 	"context"
@@ -8,35 +8,35 @@ import (
 	"github.com/google/uuid"
 )
 
-// MakePostgresTxFinalizer is a constructor for a Postgres
+// MakeFinalizer is a constructor for a Postgres
 // transaction driver
-func MakePostgresTxFinalizer(
+func MakeFinalizer(
 	ctx context.Context, name string, cPool *sql.DB,
-) *PostgresTxFinalizer {
+) *Finalizer {
 	tx, err := cPool.BeginTx(ctx, nil)
 	if err != nil {
 		panic(err)
 	}
-	return &PostgresTxFinalizer{name: name, TX: tx}
+	return &Finalizer{name: name, TX: tx}
 }
 
-// PostgresTxFinalizer manages transactions on a PostgreSQL
+// Finalizer manages transactions on a PostgreSQL
 // server
-type PostgresTxFinalizer struct {
+type Finalizer struct {
 	name string
 	TX   *sql.Tx
 	id   string
 }
 
 // Finalize sets up a prepared transaction
-func (m *PostgresTxFinalizer) Finalize() error {
+func (m *Finalizer) Finalize() error {
 	m.id = uuid.New().String()
 	_, err := m.TX.Exec(fmt.Sprintf("PREPARE TRANSACTION '%s'", m.id))
 	return err
 }
 
 // Commit finishes the transaction
-func (m *PostgresTxFinalizer) Commit() {
+func (m *Finalizer) Commit() {
 	_, err := m.TX.Exec(fmt.Sprintf("COMMIT PREPARED '%s'", m.id))
 	if err != nil {
 		panic(err)
@@ -44,7 +44,7 @@ func (m *PostgresTxFinalizer) Commit() {
 }
 
 // Abort rolls back the transaction
-func (m *PostgresTxFinalizer) Abort() {
+func (m *Finalizer) Abort() {
 	_, err := m.TX.Exec(fmt.Sprintf("ROLLBACK PREPARED '%s'", m.id))
 	if err != nil {
 		panic(err)
