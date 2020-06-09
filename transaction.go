@@ -1,41 +1,9 @@
 package txmanager
 
 import (
-	"context"
 	"log"
-	"runtime"
 	"sync"
 )
-
-type ctxKey string
-
-const thName ctxKey = "transaction manager"
-
-// WithTx adds a transaction manager to a context
-func WithTx(
-	ctx context.Context, t *Transaction,
-) context.Context {
-	_, f, l, _ := runtime.Caller(2)
-	t.Add(
-		"Context transaction tracker",
-		&Tracker{File: f, Line: l},
-	)
-	go func() {
-		<-ctx.Done()
-		t.Abort("context complete abort check")
-	}()
-	nc := context.WithValue(ctx, thName, t)
-	return nc
-}
-
-// GetTx gets a transaction manager from a context
-func GetTx(ctx context.Context) *Transaction {
-	rv := ctx.Value(thName)
-	if rv == nil {
-		panic("no transaction in context")
-	}
-	return rv.(*Transaction)
-}
 
 // Transaction is a manager to group multiple persistance
 // changes together
