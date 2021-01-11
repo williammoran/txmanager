@@ -14,7 +14,7 @@ func (t *Tracker) Finalize() error {
 }
 
 // Commit is a NOOP
-func (t *Tracker) Commit() {}
+func (t *Tracker) Commit() error { return nil }
 
 // Abort reports the file/line the transaction was created
 // on to make tracking down errors easier

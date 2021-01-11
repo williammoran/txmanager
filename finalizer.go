@@ -7,7 +7,7 @@ package txmanager
 type Finalizer struct {
 	name       string
 	finalizers []func() error
-	commits    []func()
+	commits    []func() error
 	aborts     []func()
 }
 
@@ -22,7 +22,7 @@ func MakeFinalizer(name string) *Finalizer {
 // Register adds a data modification to the Finalizer
 // by registering callback functions for the Finalize,
 // Commit and Abort steps
-func (m *Finalizer) Register(f func() error, c, a func()) {
+func (m *Finalizer) Register(f, c func() error, a func()) {
 	m.finalizers = append(m.finalizers, f)
 	m.commits = append(m.commits, c)
 	m.aborts = append(m.aborts, a)
@@ -44,12 +44,17 @@ func (m *Finalizer) Finalize() error {
 }
 
 // Commit executes the commit step on all transactions
-func (m *Finalizer) Commit() {
+func (m *Finalizer) Commit() error {
 	for _, cf := range m.commits {
 		if cf != nil {
-			cf()
+			err := cf()
+			if err != nil {
+				m.Abort()
+				return err
+			}
 		}
 	}
+	return nil
 }
 
 // Abort this transaction by calling the abort function

@@ -7,7 +7,7 @@ func TestCommit(t *testing.T) {
 	finalizer := MakeFinalizer("test")
 	finalizer.Register(
 		func() error { finalized = true; return nil },
-		func() { committed = true },
+		func() error { committed = true; return nil },
 		nil,
 	)
 	err := finalizer.Finalize()

@@ -7,7 +7,7 @@ type TxFinalizer interface {
 	Finalize() error
 	// Commit actually finishes this finalizer with changes
 	// saved
-	Commit()
+	Commit() error
 	// Abort does anything necessary to abort this finalizer
 	Abort()
 }
