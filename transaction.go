@@ -38,10 +38,6 @@ func (tx *Transaction) Finalizer(name string) TxFinalizer {
 // Commit prepares commits on all backends and finalizes
 // them if all succeed
 func (tx *Transaction) Commit() error {
-	return tx.commit()
-}
-
-func (tx *Transaction) commit() error {
 	if tx.aborted {
 		return MakeError("Transaction already aborted")
 	}
@@ -56,7 +52,11 @@ func (tx *Transaction) commit() error {
 		}
 	}
 	for _, f := range tx.handlers {
-		f.Commit()
+		e := f.Commit()
+		if e != nil {
+			tx.Abort(e.Error())
+			return e
+		}
 	}
 	tx.comitted = true
 	return nil
