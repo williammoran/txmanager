@@ -10,6 +10,8 @@ type txManagerCtxName string
 const thName txManagerCtxName = "txmanager.ContextName"
 
 // WithTx adds a transaction manager to a context
+// It also adds a Tracker that holds information about
+// the file and line # where this was called from
 func WithTx(
 	ctx context.Context, t *Transaction,
 ) context.Context {

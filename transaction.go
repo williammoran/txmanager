@@ -6,10 +6,14 @@ import (
 )
 
 // Transaction is a manager to group multiple persistance
-// changes together
+// changes together. To use it, create a Transaction
+// object, then use the Add() method to add TxFinalizers
+// to the Transaction object. When all data changes are
+// staged, call Commit() to ensure that all changes are
+// committed together or Abort() to roll back all changes.
 type Transaction struct {
-	sync.Mutex
-	sync.Once
+	mutex    sync.Mutex
+	once     sync.Once
 	comitted bool
 	aborted  bool
 	handlers map[string]TxFinalizer
@@ -17,9 +21,9 @@ type Transaction struct {
 
 // Add registers a transaction handler
 func (tx *Transaction) Add(name string, handler TxFinalizer) {
-	tx.Once.Do(tx.setup)
-	tx.Lock()
-	defer tx.Unlock()
+	tx.once.Do(tx.setup)
+	tx.mutex.Lock()
+	defer tx.mutex.Unlock()
 	_, ok := tx.handlers[name]
 	if ok {
 		log.Panicf(
@@ -35,8 +39,11 @@ func (tx *Transaction) Finalizer(name string) TxFinalizer {
 	return tx.handlers[name]
 }
 
-// Commit prepares commits on all backends and finalizes
-// them if all succeed
+// Commit Finalize()s all backends and Commit()s them
+// if all succeed. Abort()s all Finalizers if anything
+// goes wrong.
+// With properly implemented finalizers, this provides a
+// guarantee that either all data was committed, or none.
 func (tx *Transaction) Commit() error {
 	if tx.aborted {
 		return MakeError("Transaction already aborted")

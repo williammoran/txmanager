@@ -62,7 +62,7 @@ func (e *Error) Unwrap() error {
 }
 
 // Is returns true if the target is an instance of
-// NotFoundError
+// the supplied error
 func (e *Error) Is(target error) bool {
 	_, ok := target.(*Error)
 	return ok

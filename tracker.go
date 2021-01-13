@@ -2,7 +2,8 @@ package txmanager
 
 import "log"
 
-// Tracker exists to make tracking down errors easier
+// Tracker is a TxFinalizer that makes tracking down
+// errors easier
 type Tracker struct {
 	File string
 	Line int
@@ -16,8 +17,8 @@ func (t *Tracker) Finalize() error {
 // Commit is a NOOP
 func (t *Tracker) Commit() error { return nil }
 
-// Abort reports the file/line the transaction was created
-// on to make tracking down errors easier
+// Abort reports the file/line the Tracker was created
+// with to make tracking down errors easier
 func (t *Tracker) Abort() {
 	log.Printf(
 		"Aborting trasaction started %s:%d",
