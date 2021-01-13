@@ -9,7 +9,7 @@ import (
 func TestAbort(t *testing.T) {
 	abortCalled := false
 	tm := Transaction{}
-	f := MakeFinalizer("test")
+	f := NewFinalizer("test")
 	f.Register(nil, nil, func() {
 		abortCalled = true
 	})

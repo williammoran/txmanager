@@ -4,7 +4,7 @@ import "testing"
 
 func TestCommit(t *testing.T) {
 	var finalized, committed bool
-	finalizer := MakeFinalizer("test")
+	finalizer := NewFinalizer("test")
 	finalizer.Register(
 		func() error { finalized = true; return nil },
 		func() error { committed = true; return nil },

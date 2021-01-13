@@ -11,11 +11,11 @@ type Finalizer struct {
 	aborts     []func()
 }
 
-// MakeFinalizer simple constructor to make a TxFinalizer
+// NewFinalizer simple constructor to make a TxFinalizer
 // It's important to supply a unique name for purposes of
 // tracking. The Transaction object will only manage one
 // Finalizer with each name
-func MakeFinalizer(name string) *Finalizer {
+func NewFinalizer(name string) *Finalizer {
 	return &Finalizer{name: name}
 }
 
