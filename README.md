@@ -2,10 +2,6 @@
 The txmanager package provides a transaction manager to
 ensure that multiple storage backends remain synchronized
 
-The package is currently in an alpa-ish state. It works
-but it's very early in development and probalby has strange
-corner-cases.
-
 Also, it's likely that the overall interface will change
 as usage patterns and best practices emerge
 
