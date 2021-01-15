@@ -5,18 +5,18 @@ import (
 	"sync"
 )
 
-// Transaction is a manager to group multiple persistance
+// Transaction is a manager to group multiple persistence
 // changes together. To use it, create a Transaction
 // object, then use the Add() method to add TxFinalizers
 // to the Transaction object. When all data changes are
 // staged, call Commit() to ensure that all changes are
 // committed together or Abort() to roll back all changes.
 type Transaction struct {
-	mutex    sync.Mutex
-	once     sync.Once
-	comitted bool
-	aborted  bool
-	handlers map[string]TxFinalizer
+	mutex     sync.Mutex
+	once      sync.Once
+	committed bool
+	aborted   bool
+	handlers  map[string]TxFinalizer
 }
 
 // Add registers a transaction handler
@@ -48,7 +48,7 @@ func (tx *Transaction) Commit() error {
 	if tx.aborted {
 		return MakeError("Transaction already aborted")
 	}
-	if tx.comitted {
+	if tx.committed {
 		return MakeError("Transaction already comitted")
 	}
 	for _, f := range tx.handlers {
@@ -65,7 +65,7 @@ func (tx *Transaction) Commit() error {
 			return e
 		}
 	}
-	tx.comitted = true
+	tx.committed = true
 	return nil
 }
 
@@ -73,7 +73,7 @@ func (tx *Transaction) Commit() error {
 // is pending. If Commit() was successfully called,
 // nothing is done.
 func (tx *Transaction) Abort(msg string) {
-	if !tx.comitted && !tx.aborted {
+	if !tx.committed && !tx.aborted {
 		for _, f := range tx.handlers {
 			f.Abort()
 		}
